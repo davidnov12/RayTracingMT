@@ -49,8 +49,11 @@ void ge::sg::AABB_SAH_BVH::recursiveBuild(BVHNode & node, ge::sg::IndexedTriangl
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 #endif
 	
-	for (auto i = node.first; i < node.last; i = i + 1) {
-		
+	//for (auto i = node.first; i < node.last; i = i + 1) {
+	unsigned begin = node.first - _firstPrimitive, end = node.last - _firstPrimitive;
+
+	for (auto i = _firstPrimitive + begin; i < (_firstPrimitive + end); ++i) {
+
 		assert(node.first->v0 != nullptr);
 		assert(node.last->v0 != nullptr);
 
