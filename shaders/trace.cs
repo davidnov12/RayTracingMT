@@ -190,19 +190,21 @@ vec3 computeLighting(CollisionPoint col, float fresnell){
   vec3 reflect_dir = reflect(-light_dir, col.normal);
 
   float amb = 0.3;
-  float diff = 0.1, spec = 0.0;
+  float diff = 0.0, spec = 0.0;
 
   float increase = 1.0 / shadowSamples;
   vec3 indirect = vec3(0);
 
   Ray s;
-  s.origin = col.position + (light_dir * 0.001);
+  s.origin = col.position + (col.normal * 0.004) + (light_dir * 0.004);
   s.direction = light_dir;
 
   vec3 focusPoint = s.origin + s.direction;
   CollisionPoint v;
 
-  if(shadowSamples == 0) diff = 1.0;
+  if(shadowSamples == 0)
+    diff = 1.0;
+
   for(uint j = 0; j < shadowSamples; j++){
 
     if(!bvhTraversal(s, v))
@@ -217,8 +219,8 @@ vec3 computeLighting(CollisionPoint col, float fresnell){
   }
 
   s.direction = s.origin + col.normal;
-  focusPoint = s.origin + s.direction;
-  increase = 0.7 / indirectSamples;
+  //focusPoint = s.origin + s.direction;
+  increase = 0.4 / indirectSamples;
 
   for(uint j = 0; j < indirectSamples; j++){
 
@@ -236,18 +238,18 @@ vec3 computeLighting(CollisionPoint col, float fresnell){
 
   s.direction = light_dir;
   increase = 1.0 / aoSamples;
-  amb = 0.0;
+  amb = 0.1;
 
   if(aoSamples == 0)
     amb = 0.3;
 
   for(uint j = 0; j < aoSamples; j++){
 
-    if(bvhTraversal(s, v)){
-      amb += v.dist * increase * 0.1;
+    if(bvhTraversal(s, v) && v.dist < 0.5){
+      amb += v.dist * increase * 0.2;
     }
     else{
-      amb += 0.3 * increase;
+      amb += 0.2 * increase;
     }
 
     float rand1 = randm(vec2(j * gl_GlobalInvocationID.x, gl_GlobalInvocationID.y));
@@ -258,10 +260,10 @@ vec3 computeLighting(CollisionPoint col, float fresnell){
                                  focusPoint.z + 0.79 * rand3) - s.origin);
   }
 
-  col.color += 0.25 * indirect;
+  col.color += 0.17 * indirect;
 
   diff *= max(0.1, dot(light_dir, col.normal));
-  spec *= pow(max(dot(view_dir, reflect_dir), 0), 4);
+  spec *= pow(max(dot(view_dir, reflect_dir), 0), 8) * col.metalness;
 
   return (amb + (0.7 * diff) + (0.5 * spec)) * normalize(col.color);
 
@@ -560,7 +562,7 @@ vec4 rayTrace(Ray r){
     }
 
     else
-      return pixel * background;//1.4 * pixel;// * vec4(0.0095);
+      return 1.6 * pixel * background;//1.4 * pixel;// * vec4(0.0095);
 
     energy *= cp.metalness / cp.roughness;
     refIndex *= 1.0 + cp.roughness;
