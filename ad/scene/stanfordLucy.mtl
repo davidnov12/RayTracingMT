@@ -1,0 +1,29 @@
+# Blender MTL File: 'None'
+# Material Count: 3
+
+newmtl Mirror
+Ns 0.000000
+Ka 0.8 0.2 0.2
+Kd 0.95 0.95 0.95
+Ks 0.7 0.8 0.8
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl Plane
+Ns 0.000000
+Ka 0.8 0.3 0.3
+Kd 0.95 0.55 0.22
+Ks 0.1 0.8 0.8
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl Statue
+Ns 0.000000
+Ka 0.8 0.8 0.8
+Kd 0.9 0.9 0.9
+Ks 0.03 0.03 0.03
+Ni 1.000000
+d 1.000000
+illum 2
